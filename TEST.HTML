@@ -19,7 +19,6 @@
   <div id="template-artist">
     <span class="artist-melon-id"></span>
     <span class="artist-name"></span>
-    <span class="artist-img_profile"></span>
   </div>
 
   <script src="js/axios.js"></script>
@@ -40,9 +39,6 @@
           // 해당 요소에서 artist-melon-id, artist-name이라는 클래스를 가진 요소의 text를 채움
           curArtistElement.find('.artist-melon-id').text(currentArtist.melon_id);
           curArtistElement.find('.artist-name').text(currentArtist.name);
-          curArtistElement.find('.artist-img_profile').text(currentArtist.img_profile);
-          // <img src="curArtistElement.find('.artist-img_profile').text(currentArtist.img_profile)" alt=""/>
-
 
           // .artists-container내부에 위 요소를 삽입
           $('.artists-container').append(curArtistElement);
