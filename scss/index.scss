@@ -1,0 +1,33 @@
+html, body {
+  font-size: 13px;
+}
+#template {
+  display: none;
+}
+
+.artist-list {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+}
+.artist-list > .artist-item {
+  float: left;
+  width: 20%;
+  box-sizing: border-box;
+  border-bottom: 1px solid #ccc;
+  padding: 10px;
+  > .artist-name {
+
+  }
+  > .artist-img-profile {
+    width: 150px;
+  }
+}
+.btn {
+  width: 180px;
+  padding: 10px;
+  background-color: #2d85ce;
+  color: white;
+  border: none;
+  font-size: 13px;
+}

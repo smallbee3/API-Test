@@ -19,6 +19,8 @@
   <div id="template-artist">
     <span class="artist-melon-id"></span>
     <span class="artist-name"></span>
+    <span class="artist-img_profile"></span>
+    <img class="artist-img_profile2" src="" alt="" >
   </div>
 
   <script src="js/axios.js"></script>
@@ -27,7 +29,8 @@
     // API에 HTTP GET요청
     axios.get('http://localhost:8000/api/artist/')
       .then(function (response) {
-        var artists = response.data.artists;
+        var artists = response.data.results;
+        console.log(response)
         // 전달받은 데이터의 'artists'키에 해당하는 배열을 순회
         for (var i = 0; i < artists.length; i++) {
           var currentArtist = artists[i];
@@ -39,6 +42,10 @@
           // 해당 요소에서 artist-melon-id, artist-name이라는 클래스를 가진 요소의 text를 채움
           curArtistElement.find('.artist-melon-id').text(currentArtist.melon_id);
           curArtistElement.find('.artist-name').text(currentArtist.name);
+          curArtistElement.find('.artist-img_profile').text(currentArtist.img_profile);
+          curArtistElement.find('.artist-img_profile2').attr('src', currentArtist.img_profile);
+          // <img src="curArtistElement.find('.artist-img_profile').text(currentArtist.img_profile)" alt=""/>
+
 
           // .artists-container내부에 위 요소를 삽입
           $('.artists-container').append(curArtistElement);

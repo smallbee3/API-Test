@@ -1,56 +1,231 @@
-<!-- html:5[tab] -->
-<!-- python -m http.server 3000 -->
 <!DOCTYPE html>
 <html lang="ko">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
-  <title>API Test</title>
+  <title>Melon Front</title>
 </head>
 <body>
-  <div id="wrap">
-    <h1>DRF API Test!</h1>
-    <div class="artists-container">
-      <h2>Artist List</h2>
-    </div>
-  </div>
+  <h1>Melon Front!</h1>
+  <a href="artist-list.html">Artist List</a>
 
-  <div id="template-artist">
-    <span class="artist-melon-id"></span>
-    <span class="artist-name"></span>
-    <span class="artist-img_profile"></span>
-  </div>
+
+  <form id="login" action="">
+    <input type="text" id="username" placeholder="Username">
+    <input type="password" id="password" placeholder="Password">
+    <input type="submit" onclick="sendAjax(event)">
+    <button type="submit" onclick="sendAjax(event)">버튼</button>
+
+    <!-- <button id="btnMoreArtists" class="btn" type="submit" onclick="">Sign in</button> -->
+  </form>
+
+
+  <!-- 과제 1 실습 연습 3/21 -->
+  <button id="auth-token" onclick="getAuthToken('smallbee', 'asdfqwer')">get Token</button>
+
+
+  <!-- 과제 3 실습 연습 3/21 -->
+  <button onclick="getCookie('token')">get Cookie2</button>
+
+
+
 
   <script src="js/axios.js"></script>
   <script src="js/jquery-3.3.1.min.js"></script>
   <script>
-    // API에 HTTP GET요청
-    axios.get('http://localhost:8000/api/artist/')
-      .then(function (response) {
-        var artists = response.data.artists;
-        // 전달받은 데이터의 'artists'키에 해당하는 배열을 순회
-        for (var i = 0; i < artists.length; i++) {
-          var currentArtist = artists[i];
-          console.log(currentArtist);
+    // 1. AuthToken을 받아오는 JS함수를 구현
+    // function getAuthToken (username, password) {}
+    //   주어진 매개변수 username과 password를 axios로 전달하고
+    //   돌아온 'token'값을 console.log에 출력
 
-          // template-artist라는 ID를 가진 요소를 복제
-          var curArtistElement = $('#template-artist').clone();
+    // 2. form#login을 구현
+    //  username, password를 받는 input2개와
+    //  submit역할을 하는 button
+    // 해당 form에 'submit'이 실행되었을 때, form자체의 'submit'기능 대신
+    //  jQuery를 사용해서 아래 getAuthToken()함수를 실행
 
-          // 해당 요소에서 artist-melon-id, artist-name이라는 클래스를 가진 요소의 text를 채움
-          curArtistElement.find('.artist-melon-id').text(currentArtist.melon_id);
-          curArtistElement.find('.artist-name').text(currentArtist.name);
-          curArtistElement.find('.artist-img_profile').text(currentArtist.img_profile);
-          // <img src="curArtistElement.find('.artist-img_profile').text(currentArtist.img_profile)" alt=""/>
+    // https://stackoverflow.com/a/24103596
+    // 3. 위 링크를 참조해서 받아온 token값을 'token'쿠키 key에 7일후 만료되도록 저장
 
 
-          // .artists-container내부에 위 요소를 삽입
-          $('.artists-container').append(curArtistElement);
-        }
-      })
-      .catch(function (error) {
-        console.log(error);
+
+
+// 2. form#login을 구현
+      // 방법 1
+      // $('#btnMoreArtists').click(function (response) {
+      //   event.preventDefault();
+      //   console.log(response);
+      //   getAuthToken (username, password);
+      // })
+
+      // 방법 2
+      // http://triki.net/triki/jquery-html-form-submit-trigger-function-960
+      // $('#login').submit(
+      //   function (response) {
+      //     event.preventDefault();
+      //     console.log(response);
+      //     getAuthToken (username, password);
+      //     // alert('서브밋!');
+      //   }
+      // );
+
+      // 방법 3
+      // https://ko.khanacademy.org/computing/computer-programming/html-js-jquery/form-processing-jquery/a/review-processing-forms-with-jquery
+      $("form").on("submit", function() {
+        event.preventDefault();
+        var answer = $("#login").val();
+
+        // console.log(answer)
+        // console.log('안나와')
+        // getAuthToken (username, password);
       });
+
+
+
+// 1. AuthToken을 받아오는 JS함수를 구현
+      // 변수 정의
+      var username = 'smallbee';
+      var password = 'asdfqwer';
+
+      // 함수호출
+      // getAuthToken (username, password);
+
+      // 함수정의 (1)
+      function getAuthToken (username, password) {
+        // axios.post(
+        //   'http://localhost:8000/api/members/auth-token/', {
+        //   username: username,
+        //   password: password
+        // })
+        axios({
+          url: 'http://localhost:8000/api/members/auth-token/',
+          method: 'post',
+          data: {
+          username: username,
+          password: password
+          }
+        })
+        .then(function (response) {
+          console.log(response.data.token);
+          setCookie("token", response.token, 7);
+        })
+        .catch(function (error) {
+          console.log(error);
+        });
+      }
+
+
+      // 함수 정의 (2)
+      // function getAuthToken (username, password) {
+      //   $.ajax({
+      //     type: "POST",
+      //     url: 'http://localhost:8000/api/members/auth-token/',
+      //     data: {
+      //       "username": username,
+      //       "password": password
+      //     },
+      //     dataType: "json",
+      //     success: function(response) {
+      //       // console.log(response.token)
+      //       setCookie("token", response.token, 7)
+      //     }
+      //   });
+      // }
+
+
+      function sendAjax(e) {
+        // console.log(e)
+        // 이렇게 하면 e 가 와요. 저희가 막은건 Default.
+        e.preventDefault();
+        var username = $("#username").val();
+        var password = $("#password").val();
+        getAuthToken(username, password);
+      }
+
+
+
+      // 위에 html에 onclick넣은 것과 같은 의미상.
+
+      // $("#auth-token").on("click", function() {
+      //   getAuthToken('smallbee', 'asdfqwer')
+      // })
+      // on은 이벤트리스너라고 어떤 이벤트가 발생하는 순간 뒤에있는 함수ㅡㄹ 실행시키는
+      // 역할을 해주거든요.
+      // on하고 첫번째 이벤트이름을문자열로 전ㄷ라하고 뒤에 실행시키고 싶은 함수.
+      // 그래서 ajax가 날라가는거잖아요
+
+
+      // 1) 날짜없이 쿠키만 넣기
+      // function setCookie(key, value) {
+      //   document.cookie = key + "=" + value + ";"
+      // }
+        // 자바스크립트의 좋은점인지 나쁜점인지.. 키에 뭐가오든 문자열로 바뀌어서 다 변해버림.
+        // 나중에 보니까 자꾸 문자열로 바뀌어서 계쏙 더하기 되고 그런거고.
+        // 비교를 해놨는데 이걸 타입을 문자열이랑 숫자랑 같다고해가지고 넘어가고.
+        // 이게   0 == "0" 이걸 갔다고 그래요
+        // 그래서 이건 이게 잇어요
+        // 0 === "0"
+        // 이게 뭐야
+        // 그래서 막 이런것도 되요.
+        // "a" + 1
+        //  "a1"
+        // 1 + "1"
+        // "11"
+
+
+      // 2) 날짜 까지 넣기
+      function setCookie(key, value, exdays) {
+        var d = new Date();
+        d.setTime(d.getTime() + (exdays*24*60*60*1000));
+        var exdate = d.toUTCString();
+        document.cookie = key + "=" + value + ";" + "expires=" + exdate + ";"
+      }
+//
+      function getCookie(key) {
+        // 키값을 받으면 밸류를 리턴해주면 되잖아요.
+        // 이걸하면 그게 오겠죠
+
+        // var cookie = document.cookie;
+        // console.log(cookie.split(";")[1]);
+        // var cookie_list = cookie.split(";");
+
+        var decodedCookie = decodeURIComponent(document.cookie);
+        var cookie_list = decodedCookie.split("; ");
+            // 지저분한 방법대신 그냥 "; "으로 짤라서 while문 없애기
+        var target = key + "=";
+
+        $(cookie_list).each(function(index, item){
+          // console.log(index, item);
+          // console.log(item, item.indexOf('token'));
+          // 아이템을 하나씩 돌면서 아이템에 그 키 스트링이 있는지 보면 되겠죠
+
+          if (item.indexOf(target) === 0) {
+            // console.log(item);
+            // console.log(item.split('='));
+            token = item.split('=')[1];
+          }
+        });
+        console.log(token)
+        return token
+      }
+      // 그 스트링이 주어지면 그 스트링의 위치를 반환해요. 스트링 메서드에요.
+      // 자바스크립트는 스트링은 1부터 시작. (token으로 시작한다는 의미)
+      // 그래서 자바스크립트를 근본이 없다고 하는 것 같아요.
+      // var a = "hello"
+      // a.indexOf("h")
+      // 0
+
+      // if (item.charAt(0) === '')
+        // 이딴것 필요없고.
+
+
+      // $.ajax({
+      //   data: {
+      //     "token": getCookie('token')
+      //   }
+      // })
+
   </script>
 </body>
 </html>
